@@ -1,4 +1,4 @@
-name: NuGet Package
+name: NuGet Package CI/CD
 
 on:
   push:
@@ -15,7 +15,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.0.x'
-        
     - name: Restore dependencies
       run: dotnet restore
       
