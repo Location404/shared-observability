@@ -1,20 +1,24 @@
-name: NuGet Package CI/CD
+name: Publish NuGet Package
 
 on:
   push:
-    tags: [ 'v*' ]
+    tags:
+      - 'v*.*.*' # Dispara quando uma tag com formato v1.0.0 for criada
+  workflow_dispatch: # Permite execução manual
 
 jobs:
-  build-and-deploy:
+  publish:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
-    
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '8.0.x' # Ajuste conforme sua versão do .NET
+        
     - name: Restore dependencies
       run: dotnet restore
       
@@ -22,10 +26,38 @@ jobs:
       run: dotnet build --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test --configuration Release --no-build
+      run: dotnet test --configuration Release --no-build --verbosity normal
       
-    - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./packages
-      
-    - name: Publish to NuGet
-      run: dotnet nuget push ./packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+    - name: Extract version from tag
+      id: version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+        else
+          VERSION="1.0.0-preview.$(date +%Y%m%d%H%M%S)"
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version: $VERSION"
+        
+    - name: Pack NuGet package
+      run: |
+        dotnet pack --configuration Release --no-build \
+          --output ./artifacts \
+          -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          
+    - name: Publish to NuGet.org
+      run: |
+        dotnet nuget push ./artifacts/*.nupkg \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
+          
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.version.outputs.VERSION }}
+        draft: false
+        prerelease: false
