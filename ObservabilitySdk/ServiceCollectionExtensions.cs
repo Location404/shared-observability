@@ -12,7 +12,7 @@ using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.OpenTelemetry;
 
-namespace MyCompany.Observability;
+namespace ObservabilitySdk.Observability;
 
 public static class ServiceCollectionExtensions
 {
