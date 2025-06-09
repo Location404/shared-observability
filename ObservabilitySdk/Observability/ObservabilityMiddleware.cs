@@ -1,4 +1,4 @@
-namespace ObservabilitySdk;
+namespace ObservabilitySdk.Observability;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
