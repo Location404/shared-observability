@@ -2,7 +2,6 @@ namespace ObservabilitySdk.Observability;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using ObservabilitySdk.Observability;
 using System.Diagnostics;
 
 public class ObservabilityMiddleware(RequestDelegate next, ObservabilityConfiguration config)

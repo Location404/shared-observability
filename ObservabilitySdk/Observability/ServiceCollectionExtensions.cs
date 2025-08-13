@@ -14,10 +14,8 @@ namespace ObservabilitySdk.Observability;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddObservability(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        IHostEnvironment environment)
+    public static IServiceCollection AddObservability(this IServiceCollection services,
+        IConfiguration configuration, IHostEnvironment environment)
     {
         var config = configuration.GetSection("Observability").Get<ObservabilityConfiguration>() ?? new ObservabilityConfiguration();
 
@@ -92,10 +90,10 @@ public static class ServiceCollectionExtensions
 
     private static void ConfigureMetrics(MeterProviderBuilder metrics, ObservabilityConfiguration config)
     {
-        if (!config.Metrics.Enabled) return;
+        if (!config.Metrics.Enabled)
+            return;
 
-        metrics
-            .AddAspNetCoreInstrumentation()
+        metrics.AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddProcessInstrumentation();
 
@@ -121,10 +119,7 @@ public static class ServiceCollectionExtensions
             .AddHttpClientInstrumentation()
             .AddSqlClientInstrumentation()
             .SetSampler(new TraceIdRatioBasedSampler(config.Tracing.SamplingRatio))
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = new Uri(config.Tracing.OtlpEndpoint);
-            });
+            .AddOtlpExporter(options => options.Endpoint = new Uri(config.Tracing.OtlpEndpoint));
     }
 
     private static void ConfigureLogging(ILoggingBuilder logging, ObservabilityConfiguration config)
@@ -139,10 +134,8 @@ public static class ServiceCollectionExtensions
 
             if (config.Logging.OtlpExporter.Enabled)
             {
-                options.AddOtlpExporter(otlpOptions =>
-                {
-                    otlpOptions.Endpoint = new Uri(config.Logging.OtlpExporter.Endpoint);
-                });
+                options.AddOtlpExporter(
+                    otlpOptions => otlpOptions.Endpoint = new Uri(config.Logging.OtlpExporter.Endpoint));
             }
         });
     }
