@@ -25,15 +25,13 @@ public static class ObservabilityExtensions
 
         var resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService(serviceName: settings.ApplicationName, serviceVersion: "1.0.0");
-    
+
         if (settings.Loki.Enabled)
         {
             services.AddLogging(loggingBuilder => loggingBuilder.AddOpenTelemetry(options =>
                 {
                     options.SetResourceBuilder(resourceBuilder);
                     options.AddOtlpExporter(otlpOptions => otlpOptions.Endpoint = new Uri(settings.Loki.EndpointUrl));
-                    options.IncludeFormattedMessage = true;
-                    options.IncludeScopes = true;
                 }));
         }
 
@@ -58,7 +56,7 @@ public static class ObservabilityExtensions
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddRuntimeInstrumentation()
-                        .AddPrometheusExporter();
+                        .AddOtlpExporter(o => o.Endpoint = new Uri(settings.Metrics.EndpointUrl));
                 }
             });
 
@@ -73,11 +71,6 @@ public static class ObservabilityExtensions
     public static IApplicationBuilder UseObservability(this IApplicationBuilder app)
     {
         var settings = app.ApplicationServices.GetRequiredService<ObservabilitySettings>();
-
-        if (settings.Prometheus.Enabled)
-        {
-            app.UseOpenTelemetryPrometheusScrapingEndpoint();
-        }
 
         if (settings.HealthChecks.Enabled)
         {
