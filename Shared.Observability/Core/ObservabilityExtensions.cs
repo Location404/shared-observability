@@ -24,7 +24,9 @@ public static class ObservabilityExtensions
         services.AddSingleton<AppTracer>();
 
         var resourceBuilder = ResourceBuilder.CreateDefault()
-            .AddService(serviceName: settings.ApplicationName, serviceVersion: "1.0.0");
+            .AddService(
+                serviceName: settings.ApplicationName,
+                serviceVersion: "1.0.0");
 
         if (settings.Loki.Enabled)
         {
