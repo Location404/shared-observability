@@ -13,7 +13,10 @@ public class OpenTelemetrySettings
     public string ServiceNamespace { get; set; } = "production";
 
     public string Environment { get; set; } = "production";
+
     public string CollectorEndpoint { get; set; } = "http://localhost:4317";
+
+    public bool EnableConsoleExporter { get; set; } = false;
 
     public TracingSettings Tracing { get; set; } = new();
 

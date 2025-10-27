@@ -58,6 +58,12 @@ public static class OpenTelemetryServiceCollectionExtensions
             otelBuilder.WithMetrics(metrics => ConfigureMetrics(metrics, options, resourceBuilder));
         }
 
+        // Register ActivitySource for custom tracing
+        services.AddSingleton(_ => new ActivitySource(options.ServiceName));
+
+        // Register ObservabilityMetrics for custom metrics
+        services.AddSingleton(sp => new ObservabilityMetrics(options.ServiceName));
+
         return services;
     }
 
@@ -93,6 +99,11 @@ public static class OpenTelemetryServiceCollectionExtensions
             logging.SetResourceBuilder(resourceBuilder)
                 .AddOtlpExporter(exporter => ConfigureOtlpExporterForLogs(exporter, options));
 
+            if (options.EnableConsoleExporter)
+            {
+                logging.AddConsoleExporter();
+            }
+
             logging.IncludeFormattedMessage = options.Logging.IncludeFormattedMessage;
             logging.IncludeScopes = options.Logging.IncludeScopes;
             logging.ParseStateValues = options.Logging.ParseStateValues;
@@ -121,6 +132,11 @@ public static class OpenTelemetryServiceCollectionExtensions
             })
             .AddSource($"{options.ServiceName}.*")
             .AddOtlpExporter(exporter => ConfigureOtlpExporterForTraces(exporter, options, options.Tracing.BatchExport));
+
+        if (options.EnableConsoleExporter)
+        {
+            tracing.AddConsoleExporter();
+        }
     }
 
     private static void ConfigureMetrics(MeterProviderBuilder metrics, OpenTelemetrySettings options, ResourceBuilder resourceBuilder)
@@ -137,6 +153,11 @@ public static class OpenTelemetryServiceCollectionExtensions
         }
 
         metrics.AddOtlpExporter(exporter => ConfigureOtlpExporterForMetrics(exporter, options));
+
+        if (options.EnableConsoleExporter)
+        {
+            metrics.AddConsoleExporter();
+        }
     }
 
     private static void ConfigureOtlpExporterForLogs(OtlpExporterOptions exporter, OpenTelemetrySettings options)

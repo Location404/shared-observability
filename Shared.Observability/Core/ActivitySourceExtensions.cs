@@ -25,10 +25,7 @@ public static class ActivitySourceExtensions
 
     public static Activity? SetBaggage(this Activity? activity, string key, string value)
     {
-        if (activity != null)
-        {
-            Baggage.SetBaggage(key, value);
-        }
+        activity?.AddBaggage(key, value);
         return activity;
     }
 }
