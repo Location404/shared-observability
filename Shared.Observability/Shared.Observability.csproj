@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Location404.Shared.Observability</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Company>Location404</Company>
     <Description>Biblioteca centralizada para configuração de logs, métricas e traces para microsserviços.</Description>
     <RepositoryUrl>https://github.com/Location404/shared-observability</RepositoryUrl>
@@ -26,5 +26,10 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0"/>
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0"/>
     <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.12.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.System" Version="9.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Npgsql" Version="9.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.RabbitMQ" Version="9.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0"/>
   </ItemGroup>
 </Project>
