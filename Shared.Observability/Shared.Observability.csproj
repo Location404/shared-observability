@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Location404.Shared.Observability</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Company>Location404</Company>
     <Description>Biblioteca centralizada para configuração de logs, métricas e traces para microsserviços.</Description>
     <RepositoryUrl>https://github.com/Location404/shared-observability</RepositoryUrl>
