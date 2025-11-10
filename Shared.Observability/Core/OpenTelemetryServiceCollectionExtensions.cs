@@ -64,9 +64,6 @@ public static class OpenTelemetryServiceCollectionExtensions
         // Register ObservabilityMetrics for custom metrics
         services.AddSingleton(sp => new ObservabilityMetrics(options.ServiceName));
 
-        // Add Health Checks automatically
-        services.AddObservabilityHealthChecks(configuration);
-
         return services;
     }
 
